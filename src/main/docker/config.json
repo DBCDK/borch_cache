@@ -1,5 +1,5 @@
 {
-    "appName": "borchk",
+    "appName": "borchk-java",
     "logger": {
         "dk.dbc": {
             "level": "DEBUG"

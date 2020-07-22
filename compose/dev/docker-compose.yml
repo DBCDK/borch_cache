@@ -10,7 +10,7 @@ networks:
 
 services:
   borchk:
-    image: borchk-local/borchk:latest
+    image: borchk-java-local/borchk-java:latest
     environment:
       - LOG__dk_dbc=TRACE
       - JAVA_MAX_HEAP_SIZE=2G

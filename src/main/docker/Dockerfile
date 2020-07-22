@@ -7,4 +7,4 @@ MAINTAINER Team Iscrum, iscrum@dbc.dk
 # USER gfish
 
 
-ADD target/borchk-1.0.0-SNAPSHOT.war target/docker/config.json deployments/
+ADD target/borchk-java-1.0.0-SNAPSHOT.war target/docker/config.json deployments/
