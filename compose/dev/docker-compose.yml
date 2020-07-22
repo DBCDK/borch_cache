@@ -1,0 +1,18 @@
+# This compose file is meant for local development/testing only.
+version: '3'
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.169.1.0/28
+
+services:
+  borchk:
+    image: borchk-local/borchk:latest
+    environment:
+      - LOG__dk_dbc=TRACE
+      - JAVA_MAX_HEAP_SIZE=2G
+    ports:
+      - 8080:8080

@@ -1,0 +1,10 @@
+config:
+  # Backtrack is where the root of the project is, relative to this file
+  backtrack: .
+  # Use this for prefix when building
+  prefix: borchk-local
+images:
+  borchk:
+    type: prod
+    context: .
+    dockerfile: src/main/docker/Dockerfile

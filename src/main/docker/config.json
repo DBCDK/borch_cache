@@ -1,0 +1,8 @@
+{
+    "appName": "borchk",
+    "logger": {
+        "dk.dbc": {
+            "level": "DEBUG"
+        }
+    }
+}
