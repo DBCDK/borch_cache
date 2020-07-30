@@ -135,17 +135,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>dk.dbc</groupId>
-            <artifactId>dbc-commons-testutil-jpa</artifactId>
-            <version>${dbc-commons.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>${junit5.version}</version>
@@ -163,7 +152,6 @@
             <version>${junit5.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -195,6 +183,59 @@
                                 </resource>
                             </resources>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>${maven.jaxws.plugin.version}</version>
+                <dependencies>
+                    <!-- put the XJC plugins on the jaxws-maven-plugin's classpath -->
+                    <!-- More information at https://github.com/highsource/jaxb2-basics/wiki/Using-JAXB2-Basics-Plugins -->
+                    <dependency>
+                        <groupId>org.jvnet.jaxb2_commons</groupId>
+                        <artifactId>jaxb2-basics</artifactId>
+                        <version>${org.jvnet.jaxb2_commons}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <sourceDestDir>${project.build.directory}/generated-sources/jaxws-wsimport</sourceDestDir>
+                    <xnocompile>true</xnocompile>
+                    <verbose>true</verbose>
+                    <extension>true</extension>
+                    <target>2.2</target>
+                    <vmArgs>
+                        <vmArg>-Djavax.xml.accessExternalDTD=all</vmArg>
+                        <vmArg>-Djavax.xml.accessExternalStylesheet=all</vmArg>
+                        <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+                    </vmArgs>
+                    <xjcArgs>
+                        <xjcArg>-Xequals</xjcArg>
+                        <xjcArg>-XtoString</xjcArg>
+                        <xjcArg>-XtoString-toStringStrategyClass=dk.dbc.borchk.logging.BorChkToStringStrategy</xjcArg>
+                        <xjcArg>-XhashCode</xjcArg>
+                    </xjcArgs>
+                    <bindingFiles>
+                        <bindingFile>${basedir}/src/main/resources/jaxb/jaxb-serializable-binding.xml</bindingFile>
+                    </bindingFiles>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlFiles>
+                                <wsdlFile>borchk.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <wsdlDirectory>src/main/resources/wsdl</wsdlDirectory>
+                            <wsdlLocation>WEB-INF/classes/wsdl/borchk.wsdl</wsdlLocation>
+                            <staleFile>${project.build.directory}/jaxws/stale/borchk.stale</staleFile>
+                        </configuration>
+                        <id>wsimport-generate-borchk</id>
+                        <phase>generate-sources</phase>
                     </execution>
                 </executions>
             </plugin>

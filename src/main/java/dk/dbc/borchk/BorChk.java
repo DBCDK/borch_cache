@@ -1,65 +1,71 @@
 package dk.dbc.borchk;
 
 import dk.dbc.borchk.interceptor.MDCProviderSimple;
+import dk.dbc.borchk.marchallers.BorChkRequest;
+import dk.dbc.oss.ns.borchk.BorrowerCheckRequest;
+import dk.dbc.oss.ns.borchk.BorrowerCheckResponse;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.SimplyTimed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.jws.WebMethod;
+import javax.jws.WebService;
 
+@WebService(
+        serviceName = "borrowerCheckService",
+        portName = "borrowerCheckPortType",
+        targetNamespace = "http://oss.dbc.dk/ns/borchk_wsdl",
+        endpointInterface = "dk.dbc.oss.ns.borchk_wsdl.BorrowerCheckPortType",
+        wsdlLocation = "WEB-INF/classes/wsdl/borchk.wsdl"
+)
 @Stateless
-@Path("")
 public class BorChk {
     private static final Logger LOGGER = LoggerFactory.getLogger(BorChk.class);
 
-    /**
-     * HowRU method. Returns HTTP 200 if (number of rows i VIP table can be accessed) or HTTP 500 if database cannot be accessed.
-     *
-     * @return json object with number of rows in vip table or internal server error.
-     */
-    @MDCProviderSimple
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("howru")
-    public Response howRU() {
-        LOGGER.trace("Entering howRU -->");
+    @EJB
+    private BorChkBusinessLogic borChkBusinessLogic;
+
+    @PostConstruct
+    @WebMethod(exclude = true)
+    @Counted(name = "init")
+    public void init() {
+        LOGGER.info("Enter init -->");
         try {
-            JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
-            jsonObjectBuilder.add("status", "ok");
-            JsonObject jsonObject = jsonObjectBuilder.build();
-            String res = jsonObject.toString();
-            return Response.status(Response.Status.OK).entity(res).type(MediaType.APPLICATION_JSON).build();
+            LOGGER.debug("Hello, world!");
         } finally {
-            LOGGER.trace("Leaving howRU <--");
+            LOGGER.info("Exit init <--");
         }
     }
 
-    /**
-     * Stats method. STUB method for now, should do something clever!
-     *
-     * @return json object with relevant status information
-     */
     @MDCProviderSimple
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("stats")
-    public Response stats() {
-        LOGGER.trace("Entering stats -->");
+    @SimplyTimed(name = "borrowerCheck")
+    public BorrowerCheckResponse borrowerCheck(final BorrowerCheckRequest borrowerCheckRequest) {
+        LOGGER.trace("Enter borrowerCheck --> borrowerCheckRequest={}", borrowerCheckRequest);
+        BorrowerCheckResponse borrowerCheckResponse = new BorrowerCheckResponse();
         try {
-            JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
-            jsonObjectBuilder.add("status", "ok");
-            JsonObject jsonObject = jsonObjectBuilder.build();
-            String res = jsonObject.toString();
-            return Response.status(Response.Status.OK).entity(res).type(MediaType.APPLICATION_JSON).build();
+            BorChkRequest borChkRequest = mapRequest(borrowerCheckRequest);
+            borrowerCheckResponse = borChkBusinessLogic.borrowerCheck(borChkRequest);
+            return borrowerCheckResponse;
         } finally {
-            LOGGER.trace("Leaving stats <--");
+            LOGGER.trace("Exit borrowerCheck <-- borrowerCheckResponse={}", borrowerCheckResponse);
         }
+    }
+
+    // Map wsimport generated request to internal request format.
+    // This is done purely to enable caching of requests (it's very tricky to cache wsimport generated requests).
+    private BorChkRequest mapRequest(final BorrowerCheckRequest borrowerCheckRequest) {
+        if (borrowerCheckRequest == null) {
+            return null;
+        }
+        BorChkRequest borChkRequest = new BorChkRequest();
+        borChkRequest.setLibraryCode(borrowerCheckRequest.getLibraryCode());
+        borChkRequest.setServiceRequester(borrowerCheckRequest.getServiceRequester());
+        borChkRequest.setUserId(borrowerCheckRequest.getUserId());
+        borChkRequest.setUserPincode(borrowerCheckRequest.getUserPincode());
+        return borChkRequest;
     }
 }

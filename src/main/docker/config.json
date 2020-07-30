@@ -4,5 +4,14 @@
         "dk.dbc": {
             "level": "DEBUG"
         }
+    },
+    "hazelcast": {
+        "clusterName": "iscrum-borchk",
+        "cacheConfig": {
+            "BORCHK_CACHE": {
+                "timeout": "${CACHE_BORCHK}",
+                "timeUnit": "Minutes"
+            }
+        }
     }
 }

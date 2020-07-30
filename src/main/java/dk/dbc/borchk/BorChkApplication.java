@@ -12,7 +12,7 @@ import java.util.Set;
  */
 @ApplicationPath("api")
 public class BorChkApplication extends Application {
-    private static final Set<Class<?>> classes = new HashSet<>(Collections.singletonList(BorChk.class));
+    private static final Set<Class<?>> classes = new HashSet<>(Collections.singletonList(BorChkInfo.class));
 
     @Override
     public Set<Class<?>> getClasses() {

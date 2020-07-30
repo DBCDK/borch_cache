@@ -14,5 +14,6 @@ services:
     environment:
       - LOG__dk_dbc=TRACE
       - JAVA_MAX_HEAP_SIZE=2G
+      - CACHE_BORCHK=5
     ports:
       - 8080:8080
