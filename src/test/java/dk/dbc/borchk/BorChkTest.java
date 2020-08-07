@@ -11,7 +11,7 @@ public class BorChkTest {
 
     @Test
     public void test() {
-        BorChk borChk = new BorChk();
+        BorChkInfo borChk = new BorChkInfo();
         Response response = borChk.howRU();
         String responseString = (String) response.getEntity();
         assertThat(responseString, is("{\"status\":\"ok\"}"));
