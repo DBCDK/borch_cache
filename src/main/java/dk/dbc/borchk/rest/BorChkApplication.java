@@ -1,4 +1,6 @@
-package dk.dbc.borchk;
+package dk.dbc.borchk.rest;
+
+import dk.dbc.borchk.rest.BorChkInfo;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

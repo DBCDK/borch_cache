@@ -1,5 +1,6 @@
 package dk.dbc.borchk;
 
+import dk.dbc.borchk.rest.BorChkInfo;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.Response;

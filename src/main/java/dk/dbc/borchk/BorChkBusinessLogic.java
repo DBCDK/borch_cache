@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 public class BorChkBusinessLogic {
     private static final Logger LOGGER = LoggerFactory.getLogger(BorChkBusinessLogic.class);
 
+
     @CacheResult(cacheName = "BORCHK_CACHE")
     public BorrowerCheckResponse borrowerCheck(final BorChkRequest borChkRequest) {
         LOGGER.trace("Enter borrowerCheck -->");
@@ -40,4 +41,17 @@ public class BorChkBusinessLogic {
         }
         return StatusType.OK;
     }
+
+
+    @CacheResult(cacheName = "BORCHK_CACHE")
+    public NumberString pairintAndString(final int val) {
+        LOGGER.trace("Enter pairintAndString -->");
+        try {
+            return new NumberString(val);
+        } finally {
+            LOGGER.trace("Exit pairintAndString <--");
+        }
+    }
+
+
 }
